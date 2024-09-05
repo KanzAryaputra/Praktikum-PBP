@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validasi Produk</title>
+    <style>
+        form {
+            border: 2px solid #000;
+            padding: 20px; 
+            width: 300px; 
+        }
+    </style>
+    <script>
+        function generateCaptcha() {
+            let captcha = '';
+            for (let i = 0; i < 5; i++) {
+                const isUpperCase = Math.random() > 0.5; 
+                const charCode = isUpperCase
+                    ? Math.floor(Math.random() * 26) + 65  
+                    : Math.floor(Math.random() * 26) + 97; 
+                captcha += String.fromCharCode(charCode);
+            }
+            document.getElementById('captcha').innerText = captcha; 
+            document.getElementById('generatedCaptcha').value = captcha; 
+        }
+
+        function updateSubKategori() {
+            const kategori = document.getElementById('kategori').value;
+            const subKategori = document.getElementById('subKategori');
+
+            subKategori.innerHTML = '';
+
+            if (kategori === 'baju') {
+                subKategori.innerHTML = 
+                '<option value="">Pilih Sub Kategori</option><option value="pria">Baju Pria</option><option value="wanita">Baju Wanita</option><option value="anak">Baju Anak</option>';
+            } else if (kategori === 'elektronik') {
+                subKategori.innerHTML = 
+                '<option value="">Pilih Sub Kategori</option><option value="mesin-cuci">Mesin Cuci</option><option value="kulkas">Kulkas</option><option value="ac">AC</option>';
+            } else if (kategori === 'alat-tulis') {
+                subKategori.innerHTML = 
+                '<option value="">Pilih Sub Kategori</option><option value="kertas">Kertas</option><option value="map">Map</option><option value="pulpen">Pulpen</option>';
+            }
+        }
+
+        function validateForm() {
+            const namaProduk = document.getElementById('namaProduk').value;
+            const deskripsiProduk = document.getElementById('deskripsiProduk').value;
+            const kategori = document.getElementById('kategori').value;
+            const subKategori = document.getElementById('subKategori').value;
+            const hargaSatuan = document.getElementById('hargaSatuan').value;
+            const grosir = document.getElementById('grosir').checked;
+            const hargaGrosir = document.getElementById('hargaGrosir').value;
+            const jasaKirim = document.querySelectorAll('input[name="jasaKirim"]:checked').length;
+            const userCaptcha = document.getElementById('captchaInput').value;
+            const generatedCaptcha = document.getElementById('generatedCaptcha').value;
+            
+            if (namaProduk.length < 5 || namaProduk.length > 30) {
+                alert('Nama produk harus diisi dan memiliki panjang antara 5-30 karakter.');
+                return false;
+            }
+            if (deskripsiProduk.length < 5 || deskripsiProduk.length > 100) {
+                alert('Deskripsi produk harus diisi dan memiliki panjang antara 5-100 karakter.');
+                return false;
+            }
+            if (!kategori) {
+                alert('Kategori harus dipilih.');
+                return false;
+            }
+            if (!subKategori) {
+                alert('Sub kategori harus dipilih.');
+                return false;
+            }
+            if (!hargaSatuan || isNaN(hargaSatuan)) {
+                alert('Harga satuan harus diisi dengan nilai numerik.');
+                return false;
+            }
+            if (grosir && (!hargaGrosir || isNaN(hargaGrosir))) {
+                alert('Harga grosir harus diisi jika grosir dipilih.');
+                return false;
+            }
+            if (grosir && jasaKirim < 3) {
+                alert('Minimal 3 jasa kirim harus dipilih jika grosir dipilih.');
+                return false;
+            }
+            if (userCaptcha !== generatedCaptcha) {
+                alert('Captcha yang dimasukkan salah. Silakan coba lagi.');
+                return false;
+            }
+            return true; 
+        }
+    </script>
+</head>
+<body onload="generateCaptcha()">
+    <h2>Form Tambah Data Produk</h2>
+    <form onsubmit="return validateForm()">
+        <label for="namaProduk">Nama Produk:</label>
+        <input type="text" id="namaProduk" name="namaProduk" required><br>
+
+        <label for="deskripsiProduk">Deskripsi Produk:</label>
+        <textarea id="deskripsiProduk" name="deskripsiProduk" required></textarea><br>
+
+        <label for="kategori">Kategori:</label>
+        <select id="kategori" name="kategori" onchange="updateSubKategori()" required>
+            <option value="">Pilih Kategori</option>
+            <option value="baju">Baju</option>
+            <option value="elektronik">Elektronik</option>
+            <option value="alat-tulis">Alat Tulis</option>
+        </select><br>
+
+        <label for="subKategori">Sub Kategori:</label>
+        <select id="subKategori" name="subKategori" required>
+            <option value="">Pilih Sub Kategori</option>
+        </select><br>
+
+        <label for="hargaSatuan">Harga Satuan:</label>
+        <input type="number" id="hargaSatuan" name="hargaSatuan" required><br>
+
+        <label for="grosir">Grosir:</label>
+        <input type="checkbox" id="grosir" name="grosir" onchange="document.getElementById('hargaGrosir').disabled = !this.checked;"><br>
+
+        <label for="hargaGrosir">Harga Grosir:</label>
+        <input type="number" id="hargaGrosir" name="hargaGrosir" disabled><br>
+
+        <label>Jasa Kirim:</label><br>
+        <input type="checkbox" name="jasaKirim" value="jne">JNE<br>
+        <input type="checkbox" name="jasaKirim" value="pos">POS Indonesia<br>
+        <input type="checkbox" name="jasaKirim" value="tiki">TIKI<br>
+        <input type="checkbox" name="jasaKirim" value="sicepat">SiCepat<br>
+        <input type="checkbox" name="jasaKirim" value="jnt">J&T<br>
+
+        <label for="captcha">Captcha:</label>
+        <span id="captcha" style="font-weight: bold; font-size: 20px;"></span><br>
+        <label for="captchaInput">Masukkan Captcha:</label>
+        <input type="text" id="captchaInput" name="captchaInput" required>
+        <input type="hidden" id="generatedCaptcha" name="generatedCaptcha"><br><br>
+
+        <button type="submit">Submit</button>
+        <button type="resest">Reset</button>
+    </form>
+</body>
+</html>
