@@ -12,13 +12,13 @@
     <form method="POST" autocomplete="on" action="">
         <div> <div class="form-group m-2">
         <label for="nis">NIS:</label><br />
-            <input type="text" class="form-control" id="nis" name="nis" maxlenght="50">
+            <input type="text" class="form-control" id="nis" name="nis" maxlength="10">
             <span class="error" id="nisError"></span>
         </div>
         <br>
         <div> <div class="form-group m-2">
         <label for="nama">Nama:</label>
-            <input type="text" class="form-control" id="nama" name="nama" maxlenght="50">
+            <input type="text" class="form-control" id="nama" name="nama" maxlength="50">
             <span class="error" id="namaError"></span>
         </div>
         <br>
